@@ -590,36 +590,6 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "fedb543b6e5e4e7cb0b30ed85b457c20",
-      "NodeType": "CodeBlockNode",
-      "Inputs": [
-        {
-          "Id": "93fad81b1c8040e9a87eb3532a14b7f4",
-          "Name": "a",
-          "Description": "a",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "3cc21762739245299d373da070fd20de",
-          "Name": "",
-          "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "a;"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "Id": "bcdd46814be54bb4b3ee65d1c5438753",
       "NodeType": "CodeBlockNode",
       "Inputs": [
@@ -786,8 +756,8 @@
     },
     {
       "Start": "5674aeac1a3b4289a5eaea1b4e3f6d9b",
-      "End": "93fad81b1c8040e9a87eb3532a14b7f4",
-      "Id": "e57dd18b27e2422f977a23b6fae73fae",
+      "End": "03b2b33aaca149eea2b265d8f0fe0ace",
+      "Id": "28d1ab837a97467e91e6a8ccd9091588",
       "IsHidden": "False"
     },
     {
@@ -860,12 +830,6 @@
       "Start": "5e064f2b9bc94b2cbc43099f513be122",
       "End": "1daf9647ecd44e92831eb17aeb87313a",
       "Id": "996345ecafa940109646b294041028d1",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "3cc21762739245299d373da070fd20de",
-      "End": "03b2b33aaca149eea2b265d8f0fe0ace",
-      "Id": "4b7f0d579e3a457e95ee03234af2b7bb",
       "IsHidden": "False"
     },
     {
@@ -988,8 +952,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 807.5,
-        "Y": 472.5
+        "X": 562.1949442571699,
+        "Y": 451.9224002650714
       },
       {
         "Id": "6000bd4503bb47959fae3a385333c5d0",
@@ -998,8 +962,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 753.5,
-        "Y": 619.5
+        "X": 508.19494425716994,
+        "Y": 598.9224002650715
       },
       {
         "Id": "b121c3c1230e4fc6b05e92d412b2377d",
@@ -1018,18 +982,18 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 831.0,
-        "Y": 231.0
+        "X": 912.5369798218884,
+        "Y": 382.55755358538147
       },
       {
         "Id": "33d3a731bd854b71bbc8d3e2f38cf70a",
-        "Name": "Code Block",
+        "Name": "Surface name",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 860.0,
-        "Y": 354.0
+        "X": 965.3511739758328,
+        "Y": 114.77117859451062
       },
       {
         "Id": "f9a42d02af8142f29edc850434d88e60",
@@ -1038,8 +1002,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 594.5,
-        "Y": 785.5
+        "X": 349.19494425716994,
+        "Y": 764.9224002650715
       },
       {
         "Id": "d4d9329400aa47b0a4217869b63cf234",
@@ -1088,8 +1052,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2740.629499067313,
-        "Y": 363.4935477619068
+        "X": 3073.717678987476,
+        "Y": 396.9120888789761
       },
       {
         "Id": "50baff5a588f43ac99af6315d3e40e5a",
@@ -1098,18 +1062,18 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2442.466846476812,
-        "Y": 513.9498740689514
+        "X": 2728.015979854021,
+        "Y": 752.6019137055115
       },
       {
         "Id": "0a98d1005a2e401c9bc04cca1e9862b7",
-        "Name": "Python Script",
+        "Name": "Get min and max elev",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2086.7254138030275,
-        "Y": 92.92973011948723
+        "X": 2264.1733599493286,
+        "Y": 111.72827966185324
       },
       {
         "Id": "e363a29ce39346a5a05bb352b522f5ed",
@@ -1118,18 +1082,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2354.686123920121,
-        "Y": -43.26777901026031
-      },
-      {
-        "Id": "fedb543b6e5e4e7cb0b30ed85b457c20",
-        "Name": "Code Block",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 1320.0,
-        "Y": 248.0
+        "X": 2606.3964916674227,
+        "Y": -59.235655296017
       },
       {
         "Id": "bcdd46814be54bb4b3ee65d1c5438753",
@@ -1138,18 +1092,18 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1651.111092555086,
-        "Y": 114.17754768306654
+        "X": 1813.3174620449654,
+        "Y": 113.01893075813891
       },
       {
         "Id": "e3da1284279744f990260b5131187856",
-        "Name": "Code Block",
+        "Name": "Seperate min and max",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2341.0,
-        "Y": 162.0
+        "X": 2607.9788376490737,
+        "Y": 112.99747905105869
       },
       {
         "Id": "0e56f2f961ea48c1b1d5d4e55ffae485",
@@ -1158,8 +1112,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2216.0,
-        "Y": 615.0
+        "X": 2501.5491333772093,
+        "Y": 853.6520396365601
       },
       {
         "Id": "e7e182674e5b47cdb2659c995eaee414",
@@ -1168,13 +1122,86 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2027.0782888231502,
-        "Y": 366.2418804725507
+        "X": 2631.3409826926495,
+        "Y": 395.407531401466
       }
     ],
-    "Annotations": [],
-    "X": -608.6374241018216,
-    "Y": 200.44186898080653,
-    "Zoom": 0.7343938085693517
+    "Annotations": [
+      {
+        "Id": "72bb7d4edc4a4a4c886b58e7e8bd9436",
+        "Title": "UI",
+        "DescriptionText": "Description <Double click here to edit group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "932ad20c586a46b89b74d574cab26bbd",
+          "6000bd4503bb47959fae3a385333c5d0",
+          "f9a42d02af8142f29edc850434d88e60"
+        ],
+        "HasNestedGroups": false,
+        "Left": 339.19494425716994,
+        "Top": 378.9224002650714,
+        "Width": 496.0,
+        "Height": 518.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": 451.9224002650714,
+        "InitialHeight": 475.00000000000006,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "19e3e63388b843d3b5bd0582568c256a",
+        "Title": "create vol surface",
+        "DescriptionText": "Description <Double click here to edit group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "b121c3c1230e4fc6b05e92d412b2377d",
+          "05dfaab6d0bd4a05954331e9aa93828b",
+          "33d3a731bd854b71bbc8d3e2f38cf70a"
+        ],
+        "HasNestedGroups": false,
+        "Left": 902.5369798218884,
+        "Top": 41.771178594510616,
+        "Width": 813.9630201781116,
+        "Height": 681.7288214054894,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 114.77117859451062,
+        "InitialHeight": 638.7288214054894,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "2654e54c880144c68b945bc61dd03ec1",
+        "Title": "get min and max deltas",
+        "DescriptionText": "Description <Double click here to edit group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "0a98d1005a2e401c9bc04cca1e9862b7",
+          "e363a29ce39346a5a05bb352b522f5ed",
+          "e3da1284279744f990260b5131187856"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2254.1733599493286,
+        "Top": -132.235655296017,
+        "Width": 639.223131718094,
+        "Height": 387.2331343470757,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": -59.235655296017,
+        "InitialHeight": 344.2331343470757,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -639.0874747737155,
+    "Y": 388.25642852434635,
+    "Zoom": 0.6163665447219296
   }
 }
