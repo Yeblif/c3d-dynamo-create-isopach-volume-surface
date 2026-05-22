@@ -469,63 +469,6 @@
       "Description": "Performs an elevation analysis on a Surface.\n\nSurface.ElevationAnalysis (surface: Surface, minElevations: double[], maxElevations: double[], colors: Color[]): Surface"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "50baff5a588f43ac99af6315d3e40e5a",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "ecb49b744d21409f9c8e1c08af19f5d4",
-          "Name": "alpha",
-          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "6555baee80064a17b3cfa67c2cbc8da2",
-          "Name": "red",
-          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "488cd3e44b3b43caacb15899ead4c598",
-          "Name": "green",
-          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "e5c83723c15f4fc5a2a055bdbbfddc41",
-          "Name": "blue",
-          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d9420d6533f44a71871bc6b78b1472b4",
-          "Name": "color",
-          "Description": "Color created from ARGB",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
-      "Replication": "Auto",
-      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
-    },
-    {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "Code": "import clr\r\n\r\nclr.AddReference(\"AcMgd\")\r\nclr.AddReference(\"AcDbMgd\")\r\nclr.AddReference(\"AeccDbMgd\")\r\n\r\nfrom Autodesk.AutoCAD.ApplicationServices import Application\r\nfrom Autodesk.AutoCAD.DatabaseServices import OpenMode\r\nfrom Autodesk.Civil.ApplicationServices import CivilApplication\r\n\r\nsurface_name = IN[0]\r\n\r\nadoc = Application.DocumentManager.MdiActiveDocument\r\ndb = adoc.Database\r\ncivil_doc = CivilApplication.ActiveDocument\r\n\r\nresult = None\r\n\r\nlock = adoc.LockDocument()\r\ntry:\r\n    with db.TransactionManager.StartTransaction() as t:\r\n        for sid in civil_doc.GetSurfaceIds():\r\n            surf = t.GetObject(sid, OpenMode.ForRead)\r\n\r\n            if surf.Name == surface_name:\r\n                props = surf.GetGeneralProperties()\r\n\r\n                result = [\r\n                    props.MinimumElevation,\r\n                    props.MaximumElevation\r\n                ]\r\n                break\r\n\r\n        t.Commit()\r\nfinally:\r\n    lock.Dispose()\r\n\r\nOUT = result",
       "Engine": "IronPython2",
@@ -626,26 +569,6 @@
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly",
       "Code": "[passthrough,waitfor][0];"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "0e56f2f961ea48c1b1d5d4e55ffae485",
-      "NodeType": "CodeBlockNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "9c678c207e99404888cc874ae5ecd65f",
-          "Name": "",
-          "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "1;"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1259,53 +1182,26 @@
       "Description": "Visualizes a node's output"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "d25fa33c16eb4e2f835b555ac767554f",
-      "NodeType": "FunctionNode",
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "mins = IN[0]\r\nmaxs = IN[1]\r\n\r\ndef clamp(x, low, high):\r\n    return max(low, min(high, x))\r\n\r\ndef lerp(a, b, t):\r\n    return int(round(a + (b - a) * t))\r\n\r\ndef blend(c1, c2, t):\r\n    return [\r\n        lerp(c1[0], c2[0], t),\r\n        lerp(c1[1], c2[1], t),\r\n        lerp(c1[2], c2[2], t)\r\n    ]\r\n\r\n# colours\r\nzero_colour = [245,245,245]\r\n\r\ncut_colour = [180,40,0]      # orange-red\r\nfill_colour = [0,90,220]     # blue\r\n\r\nmin_delta = abs(min(mins))\r\nmax_delta = abs(max(maxs))\r\n\r\ncolours = []\r\n\r\nfor low, high in zip(mins, maxs):\r\n\r\n    mid = (low + high) / 2.0\r\n\r\n    # CUT\r\n    if high <= 0:\r\n\r\n        t = abs(mid) / min_delta\r\n        t = clamp(t, 0, 1)\r\n\r\n        colour = blend(zero_colour, cut_colour, t)\r\n\r\n    # FILL\r\n    elif low >= 0:\r\n\r\n        t = abs(mid) / max_delta\r\n        t = clamp(t, 0, 1)\r\n\r\n        colour = blend(zero_colour, fill_colour, t)\r\n\r\n    # CROSSING ZERO\r\n    else:\r\n\r\n        colour = zero_colour\r\n\r\n    colours.append(colour)\r\n\r\nOUT = colours",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "3c4757cf966b4c7b86860170525317f2",
+      "NodeType": "PythonScriptNode",
       "Inputs": [
         {
-          "Id": "1c4c6333b07245cca4a389cf76a86e75",
-          "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "8d9361c838c24e18ba54e28e4b1579fc",
-          "Name": "int",
-          "Description": "List length.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.List.Count@var[]..[]",
-      "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "a6a2ff594a764a2e8b29ff4c651e7000",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "14d2063754d44ee78a3f06c47493d540",
-          "Name": "item",
-          "Description": "The item to repeat.\n\nvar[]..[]",
+          "Id": "f498958e91f24a428d1aeeb7453cf89d",
+          "Name": "min_deltas",
+          "Description": "Input #0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         },
         {
-          "Id": "3323f7bdc4cd4c2cba3f8eb45729af9c",
-          "Name": "amount",
-          "Description": "The number of times to repeat.\n\nint",
+          "Id": "c1102e7eb0934e71ad4b4e18c0e5ced8",
+          "Name": "max_deltas",
+          "Description": "Input #1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1314,18 +1210,172 @@
       ],
       "Outputs": [
         {
-          "Id": "3c48c220683446acb341671c9e68244a",
-          "Name": "list",
-          "Description": "List of repeated items.",
+          "Id": "85597753991946e99e566b64042e79cb",
+          "Name": "OUT",
+          "Description": "Result of the python script",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "DSCore.List.OfRepeatedItem@var[]..[],int",
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b697c828914d454292d54e5246931833",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9989476f7a304ea5a85aba8ead17d7d8",
+          "Name": "alpha",
+          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d31be6bb660543249426d4e7df59f98f",
+          "Name": "red",
+          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b680cdf3378849e0a067849084d47c65",
+          "Name": "green",
+          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d194c93edea643c8a08480c98ddd6e2f",
+          "Name": "blue",
+          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d064921649334b1a9fdb493890fd898a",
+          "Name": "color",
+          "Description": "Color created from ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
       "Replication": "Auto",
-      "Description": "Creates a list containing the given item the given number of times.\n\nList.OfRepeatedItem (item: var[]..[], amount: int): var[]..[]"
+      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "9626fea7ea0c408fa9e7fd152888fdfc",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9a4e703de43542af9dc535ed87eb651b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "225;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ce3aecada10e480181604d8ee7599e93",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1a287f03f04c413e963288fd1639c813",
+          "Name": "lists",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4b030aa19374445f94223d579f1cc9ad",
+          "Name": "lists",
+          "Description": "List of transposed lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "c678d6be7f0d406b89539b5b7223dfbb",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "25a3790ba8ff4b879b3b260fe3059c2e",
+          "Name": "list",
+          "Description": "list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "53624adcf2e9431d88f370249b4e7311",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4f396deb7f104f898e9d5bc53bc8ef31",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "303b28144afd4e9c8f732446d91e7d46",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "list[0];\nlist[1];\nlist[2];"
     }
   ],
   "Connectors": [
@@ -1438,12 +1488,6 @@
       "IsHidden": "False"
     },
     {
-      "Start": "d9420d6533f44a71871bc6b78b1472b4",
-      "End": "14d2063754d44ee78a3f06c47493d540",
-      "Id": "5d0c4184554c44349970cdef3c85057c",
-      "IsHidden": "False"
-    },
-    {
       "Start": "5e064f2b9bc94b2cbc43099f513be122",
       "End": "d0a10e72383a4ec98885b71bb339b0fe",
       "Id": "7c683cefcf9e4e88ba353d647a953f9b",
@@ -1459,24 +1503,6 @@
       "Start": "8fe1effa6e7d48eda5bf1ed3c2df0548",
       "End": "70178fe6c48d4dd8adfc560ce581e2d1",
       "Id": "b6d576a5632740afb0ecb62c2556ae1f",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "9c678c207e99404888cc874ae5ecd65f",
-      "End": "ecb49b744d21409f9c8e1c08af19f5d4",
-      "Id": "051a072ac6b64e29b4f54a2f5813a448",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "9c678c207e99404888cc874ae5ecd65f",
-      "End": "6555baee80064a17b3cfa67c2cbc8da2",
-      "Id": "1ce0ccd6a71f42d0805db37b71f44a64",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "9c678c207e99404888cc874ae5ecd65f",
-      "End": "488cd3e44b3b43caacb15899ead4c598",
-      "Id": "28bec58e6b9f42e4bf5f900304a5dbcf",
       "IsHidden": "False"
     },
     {
@@ -1576,6 +1602,12 @@
       "IsHidden": "False"
     },
     {
+      "Start": "e98a8442d7bd416a9faf9b6c3e5f4246",
+      "End": "f498958e91f24a428d1aeeb7453cf89d",
+      "Id": "e7f6c12316544d9baa5c97f402310742",
+      "IsHidden": "False"
+    },
+    {
       "Start": "4b7e367c64284fae83d8ea841825174f",
       "End": "0e2b63e70f69455a948e26cabb3889d0",
       "Id": "cad987f735c54906ad15e0f9e1ef2650",
@@ -1589,8 +1621,8 @@
     },
     {
       "Start": "4b7e367c64284fae83d8ea841825174f",
-      "End": "1c4c6333b07245cca4a389cf76a86e75",
-      "Id": "8558a49eca764af6a81840fb5938e259",
+      "End": "c1102e7eb0934e71ad4b4e18c0e5ced8",
+      "Id": "6a06bd7a016b4d51995d4ee755bc8550",
       "IsHidden": "False"
     },
     {
@@ -1606,15 +1638,45 @@
       "IsHidden": "False"
     },
     {
-      "Start": "8d9361c838c24e18ba54e28e4b1579fc",
-      "End": "3323f7bdc4cd4c2cba3f8eb45729af9c",
-      "Id": "aa88719cb6c84c1b8f092f1b0868156c",
+      "Start": "85597753991946e99e566b64042e79cb",
+      "End": "1a287f03f04c413e963288fd1639c813",
+      "Id": "1da020099fbf4f90a7230fb8b9226145",
       "IsHidden": "False"
     },
     {
-      "Start": "3c48c220683446acb341671c9e68244a",
+      "Start": "d064921649334b1a9fdb493890fd898a",
       "End": "6ec342072fbb4842ab3680bc8eee10a0",
-      "Id": "1ef274eb7f6c4ee598c5be3ecda08dd6",
+      "Id": "5961c3281340486f9a2305b762bea7be",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9a4e703de43542af9dc535ed87eb651b",
+      "End": "9989476f7a304ea5a85aba8ead17d7d8",
+      "Id": "29c10520167a4807a5693a4d52fe9686",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4b030aa19374445f94223d579f1cc9ad",
+      "End": "25a3790ba8ff4b879b3b260fe3059c2e",
+      "Id": "96de4a2c0108451fab4a262b675913a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "53624adcf2e9431d88f370249b4e7311",
+      "End": "d31be6bb660543249426d4e7df59f98f",
+      "Id": "99e561b20b7b406e87955a5f65c66902",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4f396deb7f104f898e9d5bc53bc8ef31",
+      "End": "b680cdf3378849e0a067849084d47c65",
+      "Id": "d9d7e950a13b43e49485b16c228e7d76",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "303b28144afd4e9c8f732446d91e7d46",
+      "End": "d194c93edea643c8a08480c98ddd6e2f",
+      "Id": "ed497a6cff1b4a0e97a822d18e724112",
       "IsHidden": "False"
     }
   ],
@@ -1765,8 +1827,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1087.5,
-        "Y": 1901.8933333333334
+        "X": 1302.750288100499,
+        "Y": 2035.727709354369
       },
       {
         "Id": "b307eb05467f411ebe1b5912974eb599",
@@ -1799,16 +1861,6 @@
         "Y": 387.0851983497354
       },
       {
-        "Id": "50baff5a588f43ac99af6315d3e40e5a",
-        "Name": "Color.ByARGB",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 5610.570535098008,
-        "Y": 742.7750231762708
-      },
-      {
         "Id": "0a98d1005a2e401c9bc04cca1e9862b7",
         "Name": "Get min and max elev",
         "IsSetAsInput": false,
@@ -1837,16 +1889,6 @@
         "ShowGeometry": true,
         "X": 1813.3174620449654,
         "Y": 113.01893075813891
-      },
-      {
-        "Id": "0e56f2f961ea48c1b1d5d4e55ffae485",
-        "Name": "Code Block",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 5384.103688621195,
-        "Y": 843.8251491073194
       },
       {
         "Id": "e7e182674e5b47cdb2659c995eaee414",
@@ -2019,24 +2061,54 @@
         "Y": -26.88012514544306
       },
       {
-        "Id": "d25fa33c16eb4e2f835b555ac767554f",
-        "Name": "List.Count",
+        "Id": "3c4757cf966b4c7b86860170525317f2",
+        "Name": "Create band colours",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 5578.747595724676,
-        "Y": 581.378512170322
+        "X": 4928.838940597732,
+        "Y": 740.5492880585958
       },
       {
-        "Id": "a6a2ff594a764a2e8b29ff4c651e7000",
-        "Name": "List.OfRepeatedItem",
+        "Id": "b697c828914d454292d54e5246931833",
+        "Name": "Color.ByARGB",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 5957.77220821569,
-        "Y": 803.2071220397039
+        "X": 5764.306926239978,
+        "Y": 681.6300726927303
+      },
+      {
+        "Id": "9626fea7ea0c408fa9e7fd152888fdfc",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 5492.577494749282,
+        "Y": 565.0312590951395
+      },
+      {
+        "Id": "ce3aecada10e480181604d8ee7599e93",
+        "Name": "List.Transpose",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 5240.15752885754,
+        "Y": 853.0434927289408
+      },
+      {
+        "Id": "c678d6be7f0d406b89539b5b7223dfbb",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 5483.0,
+        "Y": 791.0
       }
     ],
     "Annotations": [
@@ -2140,8 +2212,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -3858.665088091921,
-    "Y": 118.37755052104671,
-    "Zoom": 0.8346528457537916
+    "X": -4756.086851466893,
+    "Y": -150.97631503984258,
+    "Zoom": 1.0152747335516095
   }
 }
