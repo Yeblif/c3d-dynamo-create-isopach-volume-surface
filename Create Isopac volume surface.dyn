@@ -527,8 +527,8 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
-      "Code": "import clr\r\n\r\nclr.AddReference(\"AcMgd\")\r\nclr.AddReference(\"AcDbMgd\")\r\nclr.AddReference(\"AeccDbMgd\")\r\n\r\nfrom Autodesk.AutoCAD.ApplicationServices import Application\r\nfrom Autodesk.AutoCAD.DatabaseServices import OpenMode\r\nfrom Autodesk.Civil.ApplicationServices import CivilApplication\r\n\r\nsurface_name = IN[0]\r\n\r\nadoc = Application.DocumentManager.MdiActiveDocument\r\ndb = adoc.Database\r\ncivil_doc = CivilApplication.ActiveDocument\r\n\r\noutput = None\r\n\r\nwith db.TransactionManager.StartTransaction() as t:\r\n    for sid in civil_doc.GetSurfaceIds():\r\n        surf = t.GetObject(sid, OpenMode.ForRead)\r\n\r\n        if surf.Name == surface_name:\r\n            props = surf.GetGeneralProperties()\r\n\r\n            output = [\r\n                props.MinimumElevation,\r\n                props.MaximumElevation\r\n            ]\r\n            break\r\n\r\n    t.Commit()\r\n\r\nOUT = output",
-      "Engine": "CPython3",
+      "Code": "import clr\r\n\r\nclr.AddReference(\"AcMgd\")\r\nclr.AddReference(\"AcDbMgd\")\r\nclr.AddReference(\"AeccDbMgd\")\r\n\r\nfrom Autodesk.AutoCAD.ApplicationServices import Application\r\nfrom Autodesk.AutoCAD.DatabaseServices import OpenMode\r\nfrom Autodesk.Civil.ApplicationServices import CivilApplication\r\n\r\nsurface_name = IN[0]\r\n\r\nadoc = Application.DocumentManager.MdiActiveDocument\r\ndb = adoc.Database\r\ncivil_doc = CivilApplication.ActiveDocument\r\n\r\nresult = None\r\n\r\nlock = adoc.LockDocument()\r\ntry:\r\n    with db.TransactionManager.StartTransaction() as t:\r\n        for sid in civil_doc.GetSurfaceIds():\r\n            surf = t.GetObject(sid, OpenMode.ForRead)\r\n\r\n            if surf.Name == surface_name:\r\n                props = surf.GetGeneralProperties()\r\n\r\n                result = [\r\n                    props.MinimumElevation,\r\n                    props.MaximumElevation\r\n                ]\r\n                break\r\n\r\n        t.Commit()\r\nfinally:\r\n    lock.Dispose()\r\n\r\nOUT = result",
+      "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "0a98d1005a2e401c9bc04cca1e9862b7",
       "NodeType": "PythonScriptNode",
@@ -1257,6 +1257,75 @@
       ],
       "Replication": "Disabled",
       "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "d25fa33c16eb4e2f835b555ac767554f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1c4c6333b07245cca4a389cf76a86e75",
+          "Name": "list",
+          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8d9361c838c24e18ba54e28e4b1579fc",
+          "Name": "int",
+          "Description": "List length.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Count@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a6a2ff594a764a2e8b29ff4c651e7000",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "14d2063754d44ee78a3f06c47493d540",
+          "Name": "item",
+          "Description": "The item to repeat.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3323f7bdc4cd4c2cba3f8eb45729af9c",
+          "Name": "amount",
+          "Description": "The number of times to repeat.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3c48c220683446acb341671c9e68244a",
+          "Name": "list",
+          "Description": "List of repeated items.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.OfRepeatedItem@var[]..[],int",
+      "Replication": "Auto",
+      "Description": "Creates a list containing the given item the given number of times.\n\nList.OfRepeatedItem (item: var[]..[], amount: int): var[]..[]"
     }
   ],
   "Connectors": [
@@ -1370,8 +1439,8 @@
     },
     {
       "Start": "d9420d6533f44a71871bc6b78b1472b4",
-      "End": "6ec342072fbb4842ab3680bc8eee10a0",
-      "Id": "80e320efaded4d718015b66ce97d4d9d",
+      "End": "14d2063754d44ee78a3f06c47493d540",
+      "Id": "5d0c4184554c44349970cdef3c85057c",
       "IsHidden": "False"
     },
     {
@@ -1519,6 +1588,12 @@
       "IsHidden": "False"
     },
     {
+      "Start": "4b7e367c64284fae83d8ea841825174f",
+      "End": "1c4c6333b07245cca4a389cf76a86e75",
+      "Id": "8558a49eca764af6a81840fb5938e259",
+      "IsHidden": "False"
+    },
+    {
       "Start": "9b0a8232d31b4a1bac1fd003361f377d",
       "End": "0f3e715e525446098edb4eb4b82d044b",
       "Id": "fc5c05d9407f4d0eb8b9debe0e3d6e5c",
@@ -1528,6 +1603,18 @@
       "Start": "9b0a8232d31b4a1bac1fd003361f377d",
       "End": "360f8cd8302f41cd8af234f060c447cc",
       "Id": "dd5aaeb8528a47abbe12ab2626253b70",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8d9361c838c24e18ba54e28e4b1579fc",
+      "End": "3323f7bdc4cd4c2cba3f8eb45729af9c",
+      "Id": "aa88719cb6c84c1b8f092f1b0868156c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3c48c220683446acb341671c9e68244a",
+      "End": "6ec342072fbb4842ab3680bc8eee10a0",
+      "Id": "1ef274eb7f6c4ee598c5be3ecda08dd6",
       "IsHidden": "False"
     }
   ],
@@ -1928,8 +2015,28 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 5507.541756892218,
-        "Y": -111.5103919816101
+        "X": 5869.312897543525,
+        "Y": -26.88012514544306
+      },
+      {
+        "Id": "d25fa33c16eb4e2f835b555ac767554f",
+        "Name": "List.Count",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 5578.747595724676,
+        "Y": 581.378512170322
+      },
+      {
+        "Id": "a6a2ff594a764a2e8b29ff4c651e7000",
+        "Name": "List.OfRepeatedItem",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 5957.77220821569,
+        "Y": 803.2071220397039
       }
     ],
     "Annotations": [
@@ -1996,11 +2103,11 @@
         "Left": 2254.1733599493286,
         "Top": -132.235655296017,
         "Width": 489.223131718094,
-        "Height": 387.96393495787026,
+        "Height": 375.96393495787026,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": -59.235655296017,
-        "InitialHeight": 317.2331343470757,
+        "InitialHeight": 315.96393495787026,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
@@ -2028,13 +2135,13 @@
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": -654.9087559018828,
-        "InitialHeight": 297.0198884813638,
+        "InitialHeight": 423.08848334319885,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       }
     ],
-    "X": -4168.980634847796,
-    "Y": 473.6816026219074,
-    "Zoom": 0.8587078620115144
+    "X": -3858.665088091921,
+    "Y": 118.37755052104671,
+    "Zoom": 0.8346528457537916
   }
 }
