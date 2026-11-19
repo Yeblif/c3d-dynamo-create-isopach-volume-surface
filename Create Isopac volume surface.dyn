@@ -18,7 +18,8 @@
       "Type": "color",
       "Type2": "color",
       "Value": "{\"Red\":206,\"Blue\":1,\"Green\":1,\"Alpha\":255}",
-      "Description": "Select a Color from the palette"
+      "Description": "Select a Color from the palette",
+      "SelectedIndex": 0
     },
     {
       "Id": "4a7b25ef06b041379b189e2e927af66f",
@@ -26,7 +27,8 @@
       "Type": "color",
       "Type2": "color",
       "Value": "{\"Red\":0,\"Blue\":255,\"Green\":67,\"Alpha\":255}",
-      "Description": "Select a Color from the palette"
+      "Description": "Select a Color from the palette",
+      "SelectedIndex": 0
     },
     {
       "Id": "13b3ae76532e4f7b99f8da94a0b7b9d3",
@@ -34,7 +36,8 @@
       "Type": "color",
       "Type2": "color",
       "Value": "{\"Red\":255,\"Blue\":255,\"Green\":255,\"Alpha\":255}",
-      "Description": "Select a Color from the palette"
+      "Description": "Select a Color from the palette",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
@@ -58,8 +61,7 @@
           "KeepListStructure": false
         }
       ],
-      "Replication": "Disabled",
-      "Description": "Select object in the current document."
+      "Replication": "Disabled"
     },
     {
       "ConcreteType": "Autodesk.AutoCAD.DynamoNodes.ObjectSelection, AutoCADNodesUI",
@@ -80,13 +82,13 @@
           "KeepListStructure": false
         }
       ],
-      "Replication": "Disabled",
-      "Description": "Select object in the current document."
+      "Replication": "Disabled"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "05dfaab6d0bd4a05954331e9aa93828b",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.AutoCAD.DynamoNodes.Document.Current",
+      "Id": "05dfaab6d0bd4a05954331e9aa93828b",
       "Inputs": [],
       "Outputs": [
         {
@@ -99,14 +101,14 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "Autodesk.AutoCAD.DynamoNodes.Document.Current",
       "Replication": "Auto",
       "Description": "Get the current AutoCAD document.\n\nDocument.Current: Document"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "33d3a731bd854b71bbc8d3e2f38cf70a",
       "NodeType": "CodeBlockNode",
+      "Code": "\"iso\";",
+      "Id": "33d3a731bd854b71bbc8d3e2f38cf70a",
       "Inputs": [],
       "Outputs": [
         {
@@ -120,16 +122,16 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "\"iso\";"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
       "Code": "import clr\r\n\r\nclr.AddReference(\"AcMgd\")\r\nclr.AddReference(\"AcDbMgd\")\r\nclr.AddReference(\"AeccDbMgd\")\r\n\r\nfrom Autodesk.AutoCAD.ApplicationServices import Application\r\nfrom Autodesk.AutoCAD.DatabaseServices import OpenMode\r\nfrom Autodesk.Civil.ApplicationServices import CivilApplication\r\n\r\nsurface_name = IN[0]\r\n\r\nadoc = Application.DocumentManager.MdiActiveDocument\r\ndb = adoc.Database\r\ncivil_doc = CivilApplication.ActiveDocument\r\n\r\nresult = None\r\n\r\nlock = adoc.LockDocument()\r\ntry:\r\n    with db.TransactionManager.StartTransaction() as t:\r\n        for sid in civil_doc.GetSurfaceIds():\r\n            surf = t.GetObject(sid, OpenMode.ForRead)\r\n\r\n            if surf.Name == surface_name:\r\n                props = surf.GetGeneralProperties()\r\n\r\n                result = [\r\n                    props.MinimumElevation,\r\n                    props.MaximumElevation\r\n                ]\r\n                break\r\n\r\n        t.Commit()\r\nfinally:\r\n    lock.Dispose()\r\n\r\nOUT = result",
-      "Engine": "IronPython2",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
       "VariableInputPorts": true,
       "Id": "0a98d1005a2e401c9bc04cca1e9862b7",
-      "NodeType": "PythonScriptNode",
       "Inputs": [
         {
           "Id": "70178fe6c48d4dd8adfc560ce581e2d1",
@@ -157,10 +159,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 50.0,
-      "WatchHeight": 57.0,
-      "Id": "e363a29ce39346a5a05bb352b522f5ed",
       "NodeType": "ExtensionNode",
+      "Id": "e363a29ce39346a5a05bb352b522f5ed",
       "Inputs": [
         {
           "Id": "d0a10e72383a4ec98885b71bb339b0fe",
@@ -188,8 +188,9 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "bcdd46814be54bb4b3ee65d1c5438753",
       "NodeType": "CodeBlockNode",
+      "Code": "[passthrough,waitfor][0];",
+      "Id": "bcdd46814be54bb4b3ee65d1c5438753",
       "Inputs": [
         {
           "Id": "03b2b33aaca149eea2b265d8f0fe0ace",
@@ -222,13 +223,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "[passthrough,waitfor][0];"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "6d935b733d54447084c763d9704e08cf",
       "NodeType": "CodeBlockNode",
+      "Code": "[0,0.01,0.05,0.1,0.25,0.5,1,2,5];",
+      "Id": "6d935b733d54447084c763d9704e08cf",
       "Inputs": [],
       "Outputs": [
         {
@@ -242,13 +243,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "[0,0.01,0.05,0.1,0.25,0.5,1,2,5];"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "2f69e91dd21b442fa5a18d9d25c6eaa4",
       "NodeType": "CodeBlockNode",
+      "Code": "fill_deltas*-1;",
+      "Id": "2f69e91dd21b442fa5a18d9d25c6eaa4",
       "Inputs": [
         {
           "Id": "65cc4f421ef74d92960fd408123b94cb",
@@ -272,13 +273,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "fill_deltas*-1;"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "2df8d455c74242239f2a13397572896a",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.DropItems@var[]..[],int",
+      "Id": "2df8d455c74242239f2a13397572896a",
       "Inputs": [
         {
           "Id": "26ee1d07983e428ba83a19cdd3508fb1",
@@ -310,14 +311,14 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "DSCore.List.DropItems@var[]..[],int",
       "Replication": "Auto",
       "Description": "Removes an amount of items from the start of the list. If the amount is a negative value, items are removed from the end of the list.\n\nList.DropItems (list: var[]..[], amount: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "64467ee5cce940b48524c64e6c897445",
       "NodeType": "CodeBlockNode",
+      "Code": "1;",
+      "Id": "64467ee5cce940b48524c64e6c897445",
       "Inputs": [],
       "Outputs": [
         {
@@ -331,13 +332,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "1;"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "c0351fdcfc4744eb9eb4df77f0b5667c",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Reverse@var[]..[]",
+      "Id": "c0351fdcfc4744eb9eb4df77f0b5667c",
       "Inputs": [
         {
           "Id": "e71840763baa4d939a7c412069511f9a",
@@ -360,14 +361,14 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "DSCore.List.Reverse@var[]..[]",
       "Replication": "Auto",
       "Description": "Creates a new list containing the items of the given list but in reverse order.\n\nList.Reverse (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "d31aad1c9acb41a5939a011c54b52d03",
       "NodeType": "CodeBlockNode",
+      "Code": "List.Flatten([cut_deltas,fill_deltas],-1);",
+      "Id": "d31aad1c9acb41a5939a011c54b52d03",
       "Inputs": [
         {
           "Id": "729a3c1dc6174182b77d2ed40e020b8c",
@@ -400,13 +401,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "List.Flatten([cut_deltas,fill_deltas],-1);"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "2f37142f26a7485dbec317d3d2a2c17b",
       "NodeType": "CodeBlockNode",
+      "Code": "a;",
+      "Id": "2f37142f26a7485dbec317d3d2a2c17b",
       "Inputs": [
         {
           "Id": "5a54cda4cf854e8f9b5fde9339987112",
@@ -430,13 +431,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "a;"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "3f705e8d71934849b686f1ba7d5ce6a2",
       "NodeType": "CodeBlockNode",
+      "Code": "//split min_max list\nmin_delta = min_max[0];\nmax_delta = min_max[1];\n\n//find value outside min_max range\nmin_bool = min_delta>=deltas?true:false;\n\nmax_bool = max_delta<=deltas?true:false;\n\n//any true\nmin_bool || max_bool;",
+      "Id": "3f705e8d71934849b686f1ba7d5ce6a2",
       "Inputs": [
         {
           "Id": "e4bf029e7f504346b9401581f500cca8",
@@ -505,13 +506,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "//split min_max list\nmin_delta = min_max[0];\nmax_delta = min_max[1];\n\n//find value outside min_max range\nmin_bool = min_delta>=deltas?true:false;\n\nmax_bool = max_delta<=deltas?true:false;\n\n//any true\nmin_bool || max_bool;"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "ac33ad048c8d4f16b3b201d2db90ac6c",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.FilterByBoolMask@var[]..[],var[]..[]",
+      "Id": "ac33ad048c8d4f16b3b201d2db90ac6c",
       "Inputs": [
         {
           "Id": "0f3e715e525446098edb4eb4b82d044b",
@@ -552,14 +553,14 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "DSCore.List.FilterByBoolMask@var[]..[],var[]..[]",
       "Replication": "Auto",
       "Description": "Filters a sequence by looking up corresponding indices in a separate list of booleans.\n\nList.FilterByBoolMask (list: var[]..[], mask: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Id": "862fb3ea0c414b919c7384c23ae788e3",
       "NodeType": "CodeBlockNode",
+      "Code": "delta_list = List.Flatten([min_delta,deltas,max_delta],-1);\n\nmin_deltas = List.DropItems(delta_list,-1);\nmax_deltas = List.DropItems(delta_list,1);",
+      "Id": "862fb3ea0c414b919c7384c23ae788e3",
       "Inputs": [
         {
           "Id": "25235764a2594163938f286d415dfa8a",
@@ -619,16 +620,16 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "delta_list = List.Flatten([min_delta,deltas,max_delta],-1);\n\nmin_deltas = List.DropItems(delta_list,-1);\nmax_deltas = List.DropItems(delta_list,1);"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
       "Code": "import clr\r\nclr.AddReference(\"DSCoreNodes\")\r\n\r\nfrom DSCore import Color\r\n\r\nmins = IN[0]\r\nmaxs = IN[1]\r\n\r\ncut_colour_in = IN[2]\r\nfill_colour_in = IN[3]\r\nzero_colour_in = IN[4]\r\n\r\ndef ds_colour_to_rgb(c):\r\n    return [int(c.Red), int(c.Green), int(c.Blue)]\r\n\r\ndef lerp(a, b, t):\r\n    return int(round(a + (b - a) * t))\r\n\r\ndef blend(c1, c2, t):\r\n    return [\r\n        lerp(c1[0], c2[0], t),\r\n        lerp(c1[1], c2[1], t),\r\n        lerp(c1[2], c2[2], t)\r\n    ]\r\n\r\nzero_colour = ds_colour_to_rgb(zero_colour_in)\r\ncut_colour = ds_colour_to_rgb(cut_colour_in)\r\nfill_colour = ds_colour_to_rgb(fill_colour_in)\r\n\r\n# classify bands\r\ncut_indices = []\r\nfill_indices = []\r\n\r\nfor i, pair in enumerate(zip(mins, maxs)):\r\n    low, high = pair\r\n\r\n    if high <= 0:\r\n        cut_indices.append(i)\r\n    elif low >= 0:\r\n        fill_indices.append(i)\r\n\r\ncolours = [None] * len(mins)\r\n\r\n# Cut: deepest cut darkest, nearest zero palest\r\ncut_count = len(cut_indices)\r\n\r\nfor rank, i in enumerate(cut_indices):\r\n    if cut_count == 1:\r\n        t = 1\r\n    else:\r\n        # rank 0 = deepest cut, rank last = nearest zero\r\n        t = 1 - (float(rank) / float(cut_count - 1))\r\n\r\n    rgb = blend(zero_colour, cut_colour, t)\r\n    colours[i] = Color.ByARGB(255, rgb[0], rgb[1], rgb[2])\r\n\r\n# Fill: nearest zero palest, highest fill darkest\r\nfill_count = len(fill_indices)\r\n\r\nfor rank, i in enumerate(fill_indices):\r\n    if fill_count == 1:\r\n        t = 1\r\n    else:\r\n        # rank 0 = nearest zero, rank last = highest fill\r\n        t = float(rank) / float(fill_count - 1)\r\n\r\n    rgb = blend(zero_colour, fill_colour, t)\r\n    colours[i] = Color.ByARGB(255, rgb[0], rgb[1], rgb[2])\r\n\r\n# fallback for any cross-zero bands\r\nfor i in range(len(colours)):\r\n    if colours[i] is None:\r\n        colours[i] = Color.ByARGB(\r\n            255,\r\n            zero_colour[0],\r\n            zero_colour[1],\r\n            zero_colour[2]\r\n        )\r\n\r\nOUT = colours",
       "Engine": "CPython3",
+      "EngineName": "CPython3",
       "VariableInputPorts": true,
       "Id": "3c4757cf966b4c7b86860170525317f2",
-      "NodeType": "PythonScriptNode",
       "Inputs": [
         {
           "Id": "f498958e91f24a428d1aeeb7453cf89d",
@@ -692,8 +693,9 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "b121c3c1230e4fc6b05e92d412b2377d",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "Camber.Civil.CivilObjects.Surfaces.TinVolumeSurface.ByTwoSurfaces@Autodesk.AutoCAD.DynamoNodes.Document,string,Autodesk.Civil.DynamoNodes.Surface,Autodesk.Civil.DynamoNodes.Surface,Camber.Civil.Styles.Objects.SurfaceStyle,double,double",
+      "Id": "b121c3c1230e4fc6b05e92d412b2377d",
       "Inputs": [
         {
           "Id": "2c1126acaa264ea29e46b2cdcbae22cf",
@@ -770,7 +772,6 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "Camber.Civil.CivilObjects.Surfaces.TinVolumeSurface.ByTwoSurfaces@Autodesk.AutoCAD.DynamoNodes.Document,string,Autodesk.Civil.DynamoNodes.Surface,Autodesk.Civil.DynamoNodes.Surface,Camber.Civil.Styles.Objects.SurfaceStyle,double,double",
       "Replication": "Auto",
       "Description": "Creates a new TIN Volume Surface by base surface and comparison surface.\n\nTinVolumeSurface.ByTwoSurfaces (document: Document, surfaceName: string, baseSurface: Surface, comparisonSurface: Surface, style: SurfaceStyle, cutFactor: double = 1, fillFactor: double = 1): TinVolumeSurface"
     },
@@ -778,8 +779,8 @@
       "ConcreteType": "Camber.UI.SurfaceStyleDropDown, CamberUI",
       "SelectedIndex": 2,
       "SelectedString": "2D Solid Fill - (Use analysis to change colour)",
-      "Id": "f9a42d02af8142f29edc850434d88e60",
       "NodeType": "ExtensionNode",
+      "Id": "f9a42d02af8142f29edc850434d88e60",
       "Inputs": [],
       "Outputs": [
         {
@@ -797,8 +798,9 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "717bb2cdb6bf4a42a0b976c82f616cfa",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "Camber.Civil.CivilObjects.Surfaces.Surface.ElevationAnalysis@Autodesk.Civil.DynamoNodes.Surface,double[],double[],DSCore.Color[]",
+      "Id": "717bb2cdb6bf4a42a0b976c82f616cfa",
       "Inputs": [
         {
           "Id": "8debcc51f8c7445dbd3c9db8c49598f1",
@@ -848,14 +850,14 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "Camber.Civil.CivilObjects.Surfaces.Surface.ElevationAnalysis@Autodesk.Civil.DynamoNodes.Surface,double[],double[],DSCore.Color[]",
       "Replication": "Auto",
       "Description": "Performs an elevation analysis on a Surface.\n\nSurface.ElevationAnalysis (surface: Surface, minElevations: double[], maxElevations: double[], colors: Color[]): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "e7e182674e5b47cdb2659c995eaee414",
       "NodeType": "FunctionNode",
+      "FunctionSignature": "Camber.Civil.CivilObjects.Surfaces.TinVolumeSurface.AsSurface",
+      "Id": "e7e182674e5b47cdb2659c995eaee414",
       "Inputs": [
         {
           "Id": "55eaa6b6e7614a42be446ea75dd3259a",
@@ -878,7 +880,6 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "Camber.Civil.CivilObjects.Surfaces.TinVolumeSurface.AsSurface",
       "Replication": "Auto",
       "Description": "\"Converts\" a TIN Volume Surface to a more-generic Surface so it can be used with the out-of-the-box nodes for Surfaces.\n\nTinVolumeSurface.AsSurface ( ): Surface"
     },
@@ -890,8 +891,8 @@
         "B": 1,
         "A": 255
       },
-      "Id": "600745aa93994bef9ea7ba8f1cfa93c2",
       "NodeType": "ColorInputNode",
+      "Id": "600745aa93994bef9ea7ba8f1cfa93c2",
       "Inputs": [],
       "Outputs": [
         {
@@ -915,8 +916,8 @@
         "B": 255,
         "A": 255
       },
-      "Id": "4a7b25ef06b041379b189e2e927af66f",
       "NodeType": "ColorInputNode",
+      "Id": "4a7b25ef06b041379b189e2e927af66f",
       "Inputs": [],
       "Outputs": [
         {
@@ -940,8 +941,8 @@
         "B": 255,
         "A": 255
       },
-      "Id": "13b3ae76532e4f7b99f8da94a0b7b9d3",
       "NodeType": "ColorInputNode",
+      "Id": "13b3ae76532e4f7b99f8da94a0b7b9d3",
       "Inputs": [],
       "Outputs": [
         {
@@ -1172,7 +1173,6 @@
       ]
     }
   ],
-  "EnableLegacyPolyCurveBehavior": true,
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
@@ -1190,26 +1190,13 @@
     "warningCount": 0,
     "errorCount": 0
   },
-  "Bindings": [
-    {
-      "NodeId": "b121c3c1-230e-4fc6-b05e-92d412b2377d",
-      "Binding": {
-        "ByTwoSurfaces_InClassDecl-1_InFunctionScope-1_Instance0_b121c3c1-230e-4fc6-b05e-92d412b2377d": "H4sIAAAAAAAACouuVkpJLElUslIyNDIwNFaqjQUAdHzz6hIAAAA="
-      }
-    },
-    {
-      "NodeId": "e7e18267-4e5b-47cd-b265-9c995eaee414",
-      "Binding": {
-        "AsSurface_InClassDecl-1_InFunctionScope-1_Instance0_e7e18267-4e5b-47cd-b265-9c995eaee414": "H4sIAAAAAAAACouuVkpJLElUslIyNDIwNFaqjQUAdHzz6hIAAAA="
-      }
-    }
-  ],
+  "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 100.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.0.3.7597",
+      "Version": "2.17.0.3472",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -1222,259 +1209,259 @@
       "LookY": -123.70307922363281,
       "LookZ": -127.78125,
       "UpX": 0.2269279956817627,
-      "UpY": 0.7386964559555054,
+      "UpY": 0.73869645595550537,
       "UpZ": -0.63468998670578
     },
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Id": "932ad20c586a46b89b74d574cab26bbd",
         "Name": "Select base surface",
+        "ShowGeometry": true,
+        "Id": "932ad20c586a46b89b74d574cab26bbd",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 623.3221512179448,
-        "Y": 588.3910257567098
+        "X": 623.32215121794479,
+        "Y": 588.39102575670984
       },
       {
-        "Id": "6000bd4503bb47959fae3a385333c5d0",
         "Name": "Select comparison surface",
+        "ShowGeometry": true,
+        "Id": "6000bd4503bb47959fae3a385333c5d0",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 569.3221512179448,
-        "Y": 735.3910257567098
+        "X": 569.32215121794479,
+        "Y": 735.39102575670984
       },
       {
-        "Id": "05dfaab6d0bd4a05954331e9aa93828b",
         "Name": "Document.Current",
+        "ShowGeometry": true,
+        "Id": "05dfaab6d0bd4a05954331e9aa93828b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1230.67180321442,
         "Y": 643.4719722966073
       },
       {
-        "Id": "33d3a731bd854b71bbc8d3e2f38cf70a",
         "Name": "Surface name",
+        "ShowGeometry": true,
+        "Id": "33d3a731bd854b71bbc8d3e2f38cf70a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1260.4905790560492,
         "Y": 496.073375529033
       },
       {
-        "Id": "0a98d1005a2e401c9bc04cca1e9862b7",
         "Name": "Get min and max elev",
+        "ShowGeometry": true,
+        "Id": "0a98d1005a2e401c9bc04cca1e9862b7",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 2559.312765029545,
-        "Y": 493.0304765963756
+        "X": 2559.3127650295451,
+        "Y": 493.03047659637559
       },
       {
-        "Id": "e363a29ce39346a5a05bb352b522f5ed",
         "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "e363a29ce39346a5a05bb352b522f5ed",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 2901.535896747639,
-        "Y": 322.0665416385054
+        "X": 2901.5358967476391,
+        "Y": 322.06654163850538
       },
       {
-        "Id": "bcdd46814be54bb4b3ee65d1c5438753",
         "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "bcdd46814be54bb4b3ee65d1c5438753",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 2108.456867125182,
-        "Y": 494.3211276926613
+        "X": 2108.4568671251818,
+        "Y": 494.32112769266132
       },
       {
-        "Id": "6d935b733d54447084c763d9704e08cf",
         "Name": "fill deltas",
+        "ShowGeometry": true,
+        "Id": "6d935b733d54447084c763d9704e08cf",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 721.6925376420486,
-        "Y": 1350.690950267608
+        "X": 721.69253764204859,
+        "Y": 1350.6909502676081
       },
       {
-        "Id": "2f69e91dd21b442fa5a18d9d25c6eaa4",
         "Name": "cut deltas",
+        "ShowGeometry": true,
+        "Id": "2f69e91dd21b442fa5a18d9d25c6eaa4",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1176.5495283765258,
         "Y": 1351.3608033598753
       },
       {
-        "Id": "2df8d455c74242239f2a13397572896a",
         "Name": "List.DropItems",
+        "ShowGeometry": true,
+        "Id": "2df8d455c74242239f2a13397572896a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1535.4707345193324,
         "Y": 1352.2810686115874
       },
       {
-        "Id": "64467ee5cce940b48524c64e6c897445",
         "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "64467ee5cce940b48524c64e6c897445",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 1305.982396601482,
+        "X": 1305.9823966014819,
         "Y": 1485.710838748972
       },
       {
-        "Id": "c0351fdcfc4744eb9eb4df77f0b5667c",
         "Name": "List.Reverse",
+        "ShowGeometry": true,
+        "Id": "c0351fdcfc4744eb9eb4df77f0b5667c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1808.1469091433423,
         "Y": 1352.6506431046248
       },
       {
-        "Id": "d31aad1c9acb41a5939a011c54b52d03",
         "Name": "Combine delta values",
+        "ShowGeometry": true,
+        "Id": "d31aad1c9acb41a5939a011c54b52d03",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 2083.771458549851,
+        "X": 2083.7714585498511,
         "Y": 1594.6610603377403
       },
       {
-        "Id": "2f37142f26a7485dbec317d3d2a2c17b",
         "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "2f37142f26a7485dbec317d3d2a2c17b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1306.9007193859275,
         "Y": 1628.7794336108068
       },
       {
-        "Id": "3f705e8d71934849b686f1ba7d5ce6a2",
         "Name": "find deltas outside of min/max range",
+        "ShowGeometry": true,
+        "Id": "3f705e8d71934849b686f1ba7d5ce6a2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 3096.8379110917035,
         "Y": 1064.279331762931
       },
       {
-        "Id": "ac33ad048c8d4f16b3b201d2db90ac6c",
         "Name": "List.FilterByBoolMask",
+        "ShowGeometry": true,
+        "Id": "ac33ad048c8d4f16b3b201d2db90ac6c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 3647.3055207170605,
         "Y": 1358.0779233458231
       },
       {
-        "Id": "862fb3ea0c414b919c7384c23ae788e3",
         "Name": "combine min, max and range deltas",
+        "ShowGeometry": true,
+        "Id": "862fb3ea0c414b919c7384c23ae788e3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 4014.515280809159,
+        "X": 4014.5152808091589,
         "Y": 1085.7185647518304
       },
       {
-        "Id": "3c4757cf966b4c7b86860170525317f2",
         "Name": "Create band colours",
+        "ShowGeometry": true,
+        "Id": "3c4757cf966b4c7b86860170525317f2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 5180.569352653646,
+        "X": 5180.5693526536461,
         "Y": 1286.089597378314
       },
       {
-        "Id": "b121c3c1230e4fc6b05e92d412b2377d",
         "Name": "TinVolumeSurface.ByTwoSurfaces",
+        "ShowGeometry": true,
+        "Id": "b121c3c1230e4fc6b05e92d412b2377d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 1610.2351453101135,
-        "Y": 765.9060265437182
+        "Y": 765.90602654371821
       },
       {
-        "Id": "f9a42d02af8142f29edc850434d88e60",
         "Name": "Surface Styles",
+        "ShowGeometry": true,
+        "Id": "f9a42d02af8142f29edc850434d88e60",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 369.132376818965,
-        "Y": 897.4049185568088
+        "Y": 897.40491855680875
       },
       {
-        "Id": "717bb2cdb6bf4a42a0b976c82f616cfa",
         "Name": "Surface.ElevationAnalysis",
+        "ShowGeometry": true,
+        "Id": "717bb2cdb6bf4a42a0b976c82f616cfa",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 5556.037274070198,
+        "X": 5556.0372740701978,
         "Y": 1085.4856911686077
       },
       {
-        "Id": "e7e182674e5b47cdb2659c995eaee414",
         "Name": "TinVolumeSurface.AsSurface",
+        "ShowGeometry": true,
+        "Id": "e7e182674e5b47cdb2659c995eaee414",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
         "X": 4087.1389885613817,
-        "Y": 769.9535336773133
+        "Y": 769.95353367731332
       },
       {
-        "Id": "600745aa93994bef9ea7ba8f1cfa93c2",
         "Name": "Max fill colour",
+        "ShowGeometry": true,
+        "Id": "600745aa93994bef9ea7ba8f1cfa93c2",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 4438.660214281424,
+        "X": 4438.6602142814236,
         "Y": 1678.6099519258664
       },
       {
-        "Id": "4a7b25ef06b041379b189e2e927af66f",
         "Name": "Max cut colour",
+        "ShowGeometry": true,
+        "Id": "4a7b25ef06b041379b189e2e927af66f",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 4442.341202503081,
+        "X": 4442.3412025030811,
         "Y": 1801.5649584693904
       },
       {
-        "Id": "13b3ae76532e4f7b99f8da94a0b7b9d3",
         "Name": "zero colour",
+        "ShowGeometry": true,
+        "Id": "13b3ae76532e4f7b99f8da94a0b7b9d3",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 4451.071049082603,
+        "X": 4451.0710490826032,
         "Y": 1938.4941509805533
       }
     ],
@@ -1493,13 +1480,13 @@
         ],
         "HasNestedGroups": false,
         "Left": 359.132376818965,
-        "Top": 515.3910257567098,
+        "Top": 515.39102575670984,
         "Width": 496.0,
-        "Height": 514.0138928000989,
+        "Height": 514.01389280009892,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 588.3910257567098,
-        "InitialHeight": 292.00000000000006,
+        "InitialTop": 588.39102575670984,
+        "InitialHeight": 454.01389280009892,
         "TextblockHeight": 63.0,
         "Background": "#FFFFB8D8"
       },
@@ -1518,12 +1505,12 @@
         "HasNestedGroups": false,
         "Left": 1220.67180321442,
         "Top": 423.073375529033,
-        "Width": 743.5633420956935,
-        "Height": 679.8326510146853,
+        "Width": 743.56334209569354,
+        "Height": 679.83265101468533,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 496.073375529033,
-        "InitialHeight": 412.78637499087085,
+        "InitialHeight": 414.83265101468521,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
@@ -1539,14 +1526,14 @@
           "e363a29ce39346a5a05bb352b522f5ed"
         ],
         "HasNestedGroups": false,
-        "Left": 2549.312765029545,
+        "Left": 2549.3127650295451,
         "Top": 249.06654163850538,
-        "Width": 489.223131718094,
-        "Height": 375.9639349578702,
+        "Width": 639.223131718094,
+        "Height": 375.96393495787021,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": 322.0665416385054,
-        "InitialHeight": 315.96393495787026,
+        "InitialTop": 322.06654163850538,
+        "InitialHeight": 315.96393495787021,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
@@ -1567,14 +1554,14 @@
           "d31aad1c9acb41a5939a011c54b52d03"
         ],
         "HasNestedGroups": false,
-        "Left": 711.6925376420486,
-        "Top": 1277.690950267608,
+        "Left": 711.69253764204859,
+        "Top": 1277.6909502676081,
         "Width": 1876.0789209078025,
         "Height": 483.08848334319873,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": 1350.690950267608,
-        "InitialHeight": 423.08848334319885,
+        "InitialTop": 1350.6909502676081,
+        "InitialHeight": 423.08848334319873,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
@@ -1591,14 +1578,14 @@
           "13b3ae76532e4f7b99f8da94a0b7b9d3"
         ],
         "HasNestedGroups": false,
-        "Left": 4428.660214281424,
+        "Left": 4428.6602142814236,
         "Top": 1582.6099519258664,
         "Width": 206.68098822165757,
         "Height": 487.88419905468663,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
         "InitialTop": 1678.6099519258664,
-        "InitialHeight": 421.88419905468663,
+        "InitialHeight": 404.88419905468686,
         "TextblockHeight": 86.0,
         "Background": "#FFFFB8D8"
       },
@@ -1618,11 +1605,11 @@
         "Left": 3086.8379110917035,
         "Top": 991.279331762931,
         "Width": 1563.6773697174553,
-        "Height": 533.7985915828922,
+        "Height": 533.79859158289219,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 1064.279331762931,
-        "InitialHeight": 490.7985915828922,
+        "InitialHeight": 438.79859158289219,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
@@ -1638,20 +1625,20 @@
           "717bb2cdb6bf4a42a0b976c82f616cfa"
         ],
         "HasNestedGroups": false,
-        "Left": 5170.569352653646,
+        "Left": 5170.5693526536461,
         "Top": 1012.4856911686077,
-        "Width": 661.4679214165517,
-        "Height": 540.6039062097063,
+        "Width": 661.46792141655169,
+        "Height": 540.60390620970634,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 1085.4856911686077,
-        "InitialHeight": 497.60390620970634,
+        "InitialHeight": 345.60390620970634,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       }
     ],
-    "X": -93.96650930655619,
-    "Y": 313.1092775899158,
-    "Zoom": 0.28191883395197986
+    "X": -362.70975514546683,
+    "Y": 219.57088596177653,
+    "Zoom": 0.36071532701579156
   }
 }
